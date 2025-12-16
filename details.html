@@ -8,7 +8,14 @@
 <script src="api_key.js"></script>
 </head>
 <body>
+
 <button id="theme-toggle" class="theme-toggle">🌙</button>
+
+<!-- 🔄 LOADER OVERLAY -->
+<div id="loader-overlay">
+  <div class="loader"></div>
+  <p>Loading content…</p>
+</div>
 
 <div class="container">
   <div class="header-bar">
@@ -38,7 +45,6 @@ function getQueryParam(param) {
 
 const folderId = getQueryParam('id');
 const chapterName = getQueryParam('name');
-const lectureId = null;
 const dppId = getQueryParam('dpp');
 const notesId = getQueryParam('notes');
 
@@ -47,24 +53,36 @@ if (chapterName) {
   document.title = decodeURIComponent(chapterName) + " Content";
 }
 
+/* 🔥 UPDATED LOAD FUNCTION WITH LOADER */
 function loadDrive(id) {
   const iframe = document.getElementById('content-iframe');
+  const loader = document.getElementById('loader-overlay');
+
+  // Show loader
+  loader.style.display = "flex";
+  loader.style.opacity = "1";
+
   iframe.style.opacity = "0";
+  iframe.src = "";
 
   setTimeout(() => {
-    iframe.src = 'https://drive.google.com/embeddedfolderview?id=' + id + '#list';
+    iframe.src =
+      'https://drive.google.com/embeddedfolderview?id=' + id + '#list';
   }, 50);
 
   iframe.onload = () => {
     iframe.style.opacity = "1";
+
+    // Hide loader smoothly
+    loader.style.opacity = "0";
+    setTimeout(() => {
+      loader.style.display = "none";
+    }, 300);
   };
 }
 
-const tabLecture = document.getElementById('tab-lecture');
 const tabDpp = document.getElementById('tab-dpp');
 const tabNotes = document.getElementById('tab-notes');
-
-
 
 if (dppId) tabDpp.onclick = () => loadDrive(dppId);
 else tabDpp.style.display = 'none';
@@ -76,6 +94,7 @@ if (dppId) loadDrive(dppId);
 else if (notesId) loadDrive(notesId);
 else if (folderId) loadDrive(folderId);
 
+/* 🌙 THEME TOGGLE */
 const toggleBtn = document.getElementById('theme-toggle');
 const body = document.body;
 
@@ -92,25 +111,24 @@ toggleBtn.addEventListener('click', () => {
 });
 </script>
 
-
 <script>
-let tapCount=0;
-const footer=document.querySelector(".footer-signature");
-const popup=document.createElement("div");
-popup.id="secret-popup";
-popup.textContent="Hidden Credit: Built by Viraj 😎";
+let tapCount = 0;
+const footer = document.querySelector(".footer-signature");
+const popup = document.createElement("div");
+popup.id = "secret-popup";
+popup.textContent = "Hidden Credit: Built by Viraj 😎";
 document.body.appendChild(popup);
 
-footer.style.userSelect="none";
-footer.style.webkitUserSelect="none";
+footer.style.userSelect = "none";
+footer.style.webkitUserSelect = "none";
 
-footer.addEventListener("click",()=>{
- tapCount++;
- setTimeout(()=>tapCount=0,600);
- if(tapCount===3){
-   popup.style.opacity="1";
-   setTimeout(()=>{ popup.style.opacity="0"; },1600);
- }
+footer.addEventListener("click", () => {
+  tapCount++;
+  setTimeout(() => tapCount = 0, 600);
+  if (tapCount === 3) {
+    popup.style.opacity = "1";
+    setTimeout(() => popup.style.opacity = "0", 1600);
+  }
 });
 </script>
 
